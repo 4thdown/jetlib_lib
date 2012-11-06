@@ -55,11 +55,35 @@ namespace jet{
     }
 
 
+    Utf8String::Utf8String( char source_character ): Utf8StringDefaultValues{
+
+        this->characters = new char[ 1 ];
+        this->characters[0] = source_character;
+
+        this->number_of_characters = 1;
+        this->size_of_character_data = 1;
+
+    }
+
+
     Utf8String::Utf8String( const std::string &source_string ): Utf8StringDefaultValues{
 
         const char *string_data = source_string.c_str();
 
         Utf8String *temp_string = new Utf8String( string_data, source_string.length() );
+
+        swap( *this, *temp_string );
+
+        delete temp_string;
+
+    }
+
+
+    Utf8String::Utf8String( const Utf8Character &other ): Utf8StringDefaultValues{
+
+        char ascii_character = other.getAsciiCharacter();
+
+        Utf8String *temp_string = new Utf8String( ascii_character );
 
         swap( *this, *temp_string );
 
@@ -135,6 +159,13 @@ namespace jet{
 
     }
 
+    bool Utf8String::isEmpty(){
+
+        return this->getSize() == 0;
+
+    }
+
+
 
     void swap( Utf8String& first, Utf8String& second ){
 
@@ -196,10 +227,53 @@ namespace jet{
     }
 
 
-    std::ostream& operator<<( std::ostream &out, const Utf8String &output_string ){
+    std::ostream& operator<<( std::ostream &output_stream, const Utf8String &output_string ){
 
-        out.write( output_string.characters, output_string.size_of_character_data );
-        return out;
+        output_stream.write( output_string.characters, output_string.size_of_character_data );
+        return output_stream;
+
+    }
+
+    std::ostream& print_as_binary( std::ostream& output_stream, const Utf8String &output_string ){
+
+        size_t byte_index = 0;
+        size_t bit_index;
+        size_t shift_by;
+
+        char bit_mask;
+
+        char *byte_iterator = output_string.characters;
+        char current_byte;
+
+        while( byte_index < output_string.size_of_character_data ){
+
+            current_byte = *byte_iterator;
+
+            bit_index = 0;
+
+            while( bit_index < 8 ){
+
+                shift_by = 7 - bit_index;
+                bit_mask = 1 << shift_by;
+
+                if( current_byte & bit_mask ){
+                    output_stream.write( "1", 1 );
+                }else{
+                    output_stream.write( "0", 1 );
+                }
+
+                bit_index++;
+
+            }
+
+            byte_index++;
+
+            byte_iterator++;
+
+        }
+
+
+        return output_stream;
 
     }
 
