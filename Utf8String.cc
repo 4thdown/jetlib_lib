@@ -129,6 +129,18 @@ namespace jet{
     }
 
 
+    Utf8String& Utf8String::operator=( const char *other ){
+
+        //copy and swap
+        Utf8String *temp_string = new Utf8String( other );
+        swap( *this, *temp_string );
+        delete temp_string;
+
+        return *this;
+
+    }
+
+
 
     Utf8String& Utf8String::operator=( Utf8String &&other ){
 
@@ -166,6 +178,13 @@ namespace jet{
         }
 
         return this->characters[ index ];
+
+    }
+
+
+    const char* Utf8String::getCString() const{
+
+        return this->characters;
 
     }
 
