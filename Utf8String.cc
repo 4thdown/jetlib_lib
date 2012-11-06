@@ -13,9 +13,11 @@ namespace jet{
     #define Utf8StringDefaultValues include_bom(true),number_of_characters(0),size_of_character_data(0),characters(NULL)
 
 
+
     Utf8String::Utf8String(): Utf8StringDefaultValues{
 
     }
+
 
 
     Utf8String::Utf8String( const Utf8String& other ): Utf8StringDefaultValues{
@@ -40,6 +42,7 @@ namespace jet{
     }
 
 
+
     Utf8String::Utf8String( const char *source_string, size_t size_in_bytes ): Utf8StringDefaultValues{
 
         if( size_in_bytes == 0 ){
@@ -55,6 +58,25 @@ namespace jet{
     }
 
 
+
+    Utf8String::Utf8String( const char *source_string ): Utf8StringDefaultValues{
+
+        size_t size_in_bytes = strlen( source_string );
+
+        if( size_in_bytes == 0 ){
+            throw Exception( "Utf8String size cannot be zero." );
+        }
+
+        this->characters = new char[ size_in_bytes ];
+        memcpy( this->characters, source_string, size_in_bytes );
+
+        this->number_of_characters = size_in_bytes;
+        this->size_of_character_data = size_in_bytes;
+
+    }
+
+
+
     Utf8String::Utf8String( char source_character ): Utf8StringDefaultValues{
 
         this->characters = new char[ 1 ];
@@ -64,6 +86,7 @@ namespace jet{
         this->size_of_character_data = 1;
 
     }
+
 
 
     Utf8String::Utf8String( const std::string &source_string ): Utf8StringDefaultValues{
@@ -79,6 +102,7 @@ namespace jet{
     }
 
 
+
     Utf8String::Utf8String( const Utf8Character &other ): Utf8StringDefaultValues{
 
         char ascii_character = other.getAsciiCharacter();
@@ -92,6 +116,7 @@ namespace jet{
     }
 
 
+
     Utf8String& Utf8String::operator=( const Utf8String &other ){
 
         //copy and swap
@@ -102,6 +127,7 @@ namespace jet{
         return *this;
 
     }
+
 
 
     Utf8String& Utf8String::operator=( Utf8String &&other ){
@@ -118,8 +144,6 @@ namespace jet{
             return *this;
 
     }
-
-
 
 
 
@@ -162,17 +186,20 @@ namespace jet{
     }
 
 
+
     unsigned int Utf8String::getSize(){
 
         return this->number_of_characters;
 
     }
 
+
     unsigned int Utf8String::getLength(){
 
         return this->number_of_characters;
 
     }
+
 
     bool Utf8String::isEmpty(){
 
@@ -195,6 +222,7 @@ namespace jet{
         swap( first.characters, second.characters );
 
     }
+
 
 
     Utf8String& Utf8String::operator+=( const Utf8String &right ){
@@ -235,11 +263,32 @@ namespace jet{
     }
 
 
-    const Utf8String Utf8String::operator+( const Utf8String &right ){
 
-        return Utf8String( *this ) += right;
+    Utf8String& Utf8String::operator+=( const char right ){
+
+        Utf8String *right_string = new Utf8String( right );
+        *this += *right_string;
+        delete right_string;
+        return *this;
 
     }
+
+
+
+    const Utf8String Utf8String::operator+( const Utf8String &right ){
+
+        return Utf8String(*this) += right;
+
+    }
+
+
+
+    const Utf8String Utf8String::operator+( const char right ){
+
+        return Utf8String(*this) += Utf8String(right);
+
+    }
+
 
 
     std::ostream& operator<<( std::ostream &output_stream, const Utf8String &output_string ){
@@ -248,6 +297,8 @@ namespace jet{
         return output_stream;
 
     }
+
+
 
     std::ostream& print_as_binary( std::ostream& output_stream, const Utf8String &output_string ){
 
