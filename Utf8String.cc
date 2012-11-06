@@ -132,6 +132,21 @@ namespace jet{
     }
 
 
+
+    char Utf8String::getAsciiCharacterAtIndex( size_t index ) const{
+
+        if( index >= this->number_of_characters ){
+
+            throw new Exception( "Index out of range." );
+
+        }
+
+        return this->characters[ index ];
+
+    }
+
+
+
     void Utf8String::clear(){
 
         if( this->size_of_character_data == 0 ){
