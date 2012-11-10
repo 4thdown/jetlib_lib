@@ -206,21 +206,21 @@ namespace jet{
 
 
 
-    unsigned int Utf8String::getSize(){
+    unsigned int Utf8String::getSize() const{
 
         return this->number_of_characters;
 
     }
 
 
-    unsigned int Utf8String::getLength(){
+    unsigned int Utf8String::getLength() const{
 
         return this->number_of_characters;
 
     }
 
 
-    bool Utf8String::isEmpty(){
+    bool Utf8String::isEmpty() const{
 
         return this->getSize() == 0;
 
@@ -361,6 +361,48 @@ namespace jet{
         return output_stream;
 
     }
+
+
+    bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ){
+
+        size_t left_length = left.getLength();
+        size_t right_length = right.getLength();
+        size_t shortest = ( left_length < right_length )? left_length : right_length;
+
+        size_t x = 0;
+
+        char left_character, right_character;
+
+        for( ; x < shortest; x++ ){
+
+            left_character = left.getAsciiCharacterAtIndex( x );
+            right_character = right.getAsciiCharacterAtIndex( x );
+
+            if( left_character < right_character ){
+                return true;
+            }
+
+            if( left_character > right_character ){
+                return false;
+            }
+
+        }
+
+        if( left_length == right_length ){
+            //strings are equal
+            return false;
+        }
+
+        if( right_length > left_length ){
+            //right has more characters
+            return true;
+        }
+
+        //left has more characters
+        return false;
+
+    }
+
 
 
 }
