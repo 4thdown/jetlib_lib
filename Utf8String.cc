@@ -363,7 +363,7 @@ namespace jet{
     }
 
 
-    bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ){
+    bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
 
         size_t left_length = left.getLength();
         size_t right_length = right.getLength();
@@ -402,6 +402,7 @@ namespace jet{
         return false;
 
     }
+
 
 
 
