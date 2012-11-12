@@ -46,7 +46,7 @@ namespace jet{
     Utf8String::Utf8String( const char *source_string, size_t size_in_bytes ): Utf8StringDefaultValues{
 
         if( size_in_bytes == 0 ){
-            throw Exception( "Utf8String size cannot be zero." );
+            throw new Exception( "Utf8String size cannot be zero." );
         }
 
         this->characters = new char[ size_in_bytes ];
@@ -64,7 +64,7 @@ namespace jet{
         size_t size_in_bytes = strlen( source_string );
 
         if( size_in_bytes == 0 ){
-            throw Exception( "Utf8String size cannot be zero." );
+            throw new Exception( "Utf8String size cannot be zero." );
         }
 
         this->characters = new char[ size_in_bytes ];
@@ -100,6 +100,7 @@ namespace jet{
         delete temp_string;
 
     }
+
 
 
 

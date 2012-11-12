@@ -12,4 +12,10 @@ namespace jet{
 
     }
 
+    Exception::Exception( const Utf8String exception_message ){
+
+        this->message = exception_message;
+
+    }
+
 }

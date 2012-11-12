@@ -63,7 +63,8 @@ namespace jet{
 
         char *memblock;
 
-        ifstream myfile( this->filename.getCString(), ios::in|ios::binary|ios::ate );
+        ifstream myfile( this->filename.getCString(), ios::in | ios::binary | ios::ate );
+
         if( myfile.is_open() ){
 
             size = myfile.tellg();
@@ -89,5 +90,13 @@ namespace jet{
         return this->contents;
 
     }
+
+
+    Utf8String File::getFilename() const{
+
+        return this->filename;
+
+    }
+
 
 }
