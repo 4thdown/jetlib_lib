@@ -71,7 +71,7 @@ namespace jet{
             while( (directory_entry = readdir(directory)) ){
 
                 // Only recognize regular files or symlinks
-                if( directory_entry->d_type != (DT_REG|DT_LNK) ){
+                if( directory_entry->d_type != DT_REG && directory_entry->d_type != DT_LNK ){
                     continue;
                 }
 
@@ -171,20 +171,19 @@ namespace jet{
      */
     Utf8String Directory::getWorkingPath(){
 
-        // Credit to Pete Kirkham - http://stackoverflow.com/a/2203853/278976
+        char buffer[ PATH_MAX ];
+        char *result;
 
-        char temp [ PATH_MAX ];
+        result = getcwd( buffer, PATH_MAX );
 
-        if( getcwd(temp, PATH_MAX) == 0 ){
-            return Utf8String( temp );
-        }
+        //free(result);
+
+        return Utf8String( buffer );
+
 
         int error = errno;
 
         switch( error ){
-            // EINVAL can't happen - size argument > 0
-
-            // PATH_MAX includes the terminating null so ERANGE should not be returned
 
             case EACCES:
                 throw new Exception( "Permission to read or search a component of the filename was denied." );
@@ -195,9 +194,22 @@ namespace jet{
             case EFAULT:
                 throw new Exception( "buf points to a bad address." );
 
+            case EINVAL:
+                throw new Exception( "The size argument is zero and buf is not a NULL pointer." );
+
+            case ENAMETOOLONG:
+                throw new Exception( "The size of the null-terminated absolute pathname string exceeds PATH_MAX bytes." );
+
+            case ENOENT:
+                throw new Exception( "The current working directory has been unlinked." );
+
+            case ERANGE:
+                throw new Exception( "The size argument is less than the length of the absolute pathname of the working directory, including the terminating null byte. You need to allocate a bigger array and try again." );
+
             default: {
                 throw new Exception( "Unrecognised error from getcwd." );
             }
+
         };
 
     }
