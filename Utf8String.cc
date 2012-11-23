@@ -406,5 +406,67 @@ namespace jet{
 
 
 
+    Utf8String Utf8String::toCamelCase() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+        bool is_first_character = true;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if(
+                ( current_character >= 0x41 && current_character <= 0x5A ) ||  //upper-case alpha
+                ( current_character >= 0x61 && current_character <= 0x7A ) ||  //lower-case alpha
+                ( current_character >= 0x30 && current_character <= 0x39 ) ||  //numeric
+                ( current_character == 0x5F )                                  //underscore
+            ){
+
+                if( is_first_character && ( current_character >= 0x61 && current_character <= 0x7A ) ){  //is lower
+
+                    new_string += ( current_character - 32 );  //convert to uppercase and add it to the new string
+                    current_character_index++;
+                    is_first_character = false;
+                    continue;
+
+                }
+
+                if( ( current_character >= 0x61 && current_character <= 0x7A ) || ( current_character >= 0x30 && current_character <= 0x39 ) ){  //is lower or numeric
+
+                    new_string += current_character; //add it to the new string as lower case
+                    current_character_index++;
+                    is_first_character = false;
+                    continue;
+
+                }
+
+
+                if( current_character == 0x5F ){   //is underscore
+
+                    is_first_character = true;
+                    current_character_index++;
+                    continue;
+
+                }
+
+                //skip all other characters
+
+
+            }
+
+            current_character_index++;
+
+        }
+
+        return new_string;
+
+    }
+
+
+
+
 
 }
