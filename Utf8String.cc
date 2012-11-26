@@ -467,6 +467,65 @@ namespace jet{
 
 
 
+    Utf8String Utf8String::toLowerCase() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character >= 0x41 && current_character <= 0x5A ){  //upper-case alpha
+
+                new_string += ( current_character + 32 );  //convert to lower case and add it to the new string
+
+            }else{
+
+                new_string += current_character;
+
+            }
+
+            current_character_index++;
+
+        }
+
+        return new_string;
+
+    }
+
+
+
+    Utf8String Utf8String::toUpperCase() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character >= 0x61 && current_character <= 0x7A ){  //lower-case alpha
+
+                new_string += ( current_character - 32 );  //convert to upper case and add it to the new string
+
+            }else{
+
+                new_string += current_character;
+
+            }
+
+            current_character_index++;
+
+        }
+
+        return new_string;
+
+    }
 
 
 }
