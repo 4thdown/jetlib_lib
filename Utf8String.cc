@@ -373,7 +373,49 @@ namespace jet{
     }
 
 
-    int Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
+    bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
+
+        size_t left_length = left.getLength();
+        size_t right_length = right.getLength();
+        size_t shortest = ( left_length < right_length )? left_length : right_length;
+
+        size_t x = 0;
+
+        char left_character, right_character;
+
+        for( ; x < shortest; x++ ){
+
+            left_character = left.getAsciiCharacterAtIndex( x );
+            right_character = right.getAsciiCharacterAtIndex( x );
+
+            if( left_character < right_character ){
+                return true;
+            }
+
+            if( left_character > right_character ){
+                return false;
+            }
+
+        }
+
+        if( left_length == right_length ){
+            //strings are equal
+            return false;
+        }
+
+        if( right_length > left_length ){
+            //right has more characters
+            return true;
+        }
+
+        //left has more characters
+        return false;
+
+    }
+
+
+
+    int Utf8String::compare( Utf8String const &left, Utf8String const &right ){
 
         size_t left_length = left.getLength();
         size_t right_length = right.getLength();
@@ -414,209 +456,123 @@ namespace jet{
     }
 
 
+    int Utf8String::compare( const char* left, Utf8String const &right ){
+
+        Utf8String left_utf8string( left );
+        return Utf8String::compare( left_utf8string, right );
+
+    }
+
+    int Utf8String::compare( Utf8String const &left, const char* right ){
+
+        Utf8String right_utf8string( right );
+        return Utf8String::compare( left, right_utf8string );
+
+    }
+
+    int Utf8String::compare( const std::string& left, Utf8String const &right ){
+
+        Utf8String left_utf8string( left );
+        return Utf8String::compare( left_utf8string, right );
+
+    }
+
+    int Utf8String::compare( Utf8String const &left, const std::string& right ){
+
+        Utf8String right_utf8string( right );
+        return Utf8String::compare( left, right_utf8string );
+
+    }
+
+
+
+
+
     int Utf8String::compare( const Utf8String& other ){
-
-        Utf8StringComparator comparator;
-        return comparator( *this, other );
-
+        return Utf8String::compare( *this, other );
     }
 
 
     int Utf8String::compare( const char* other ){
-
-        Utf8StringComparator comparator;
-        return comparator( *this, Utf8String(other) );
-
+        return Utf8String::compare( *this, Utf8String(other) );
     }
 
 
     int Utf8String::compare( const std::string& other ){
-
-        Utf8StringComparator comparator;
-        return comparator( *this, Utf8String(other) );
-
+        return Utf8String::compare( *this, Utf8String(other) );
     }
 
 
 
-    bool operator==( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) == 0;
-    }
+    bool operator==( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) == 0; }
 
-    bool operator==( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) == 0;
-    }
+    bool operator==( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) == 0; }
 
-    bool operator==( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) == 0;
-    }
+    bool operator==( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) == 0; }
 
-    bool operator==( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) == 0;
-    }
+    bool operator==( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) == 0; }
 
-    bool operator==( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) == 0;
-    }
+    bool operator==( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) == 0; }
 
 
 
-    bool operator!=( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) != 0;
-    }
+    bool operator!=( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) != 0; }
 
-    bool operator!=( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) != 0;
-    }
+    bool operator!=( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) != 0; }
 
-    bool operator!=( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) != 0;
-    }
+    bool operator!=( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) != 0; }
 
-    bool operator!=( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) != 0;
-    }
+    bool operator!=( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) != 0; }
 
-    bool operator!=( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) != 0;
-    }
+    bool operator!=( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) != 0; }
 
 
 
-    bool operator<( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) < 0;
-    }
+    bool operator<( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) < 0; }
 
-    bool operator<( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) < 0;
-    }
+    bool operator<( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) < 0; }
 
-    bool operator<( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) < 0;
-    }
+    bool operator<( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) < 0; }
 
-    bool operator<( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) < 0;
-    }
+    bool operator<( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) < 0; }
 
-    bool operator<( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) < 0;
-    }
+    bool operator<( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) < 0; }
 
 
 
-    bool operator>( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) > 0;
-    }
+    bool operator>( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) > 0; }
 
-    bool operator>( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) > 0;
-    }
+    bool operator>( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) > 0; }
 
-    bool operator>( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) > 0;
-    }
+    bool operator>( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) > 0; }
 
-    bool operator>( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) > 0;
-    }
+    bool operator>( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) > 0; }
 
-    bool operator>( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) > 0;
-    }
+    bool operator>( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) > 0; }
 
 
 
-    bool operator<=( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) <= 0;
-    }
+    bool operator<=( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) <= 0; }
 
-    bool operator<=( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) <= 0;
-    }
+    bool operator<=( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) <= 0; }
 
-    bool operator<=( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) <= 0;
-    }
+    bool operator<=( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) <= 0; }
 
-    bool operator<=( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) <= 0;
-    }
+    bool operator<=( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) <= 0; }
 
-    bool operator<=( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) <= 0;
-    }
+    bool operator<=( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) <= 0; }
 
 
 
-    bool operator>=( const Utf8String& lhs, const Utf8String& rhs ){
-        Utf8StringComparator comparator;
-        return comparator( lhs, rhs ) >= 0;
-    }
+    bool operator>=( const Utf8String& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) >= 0; }
 
-    bool operator>=( const char* lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        Utf8StringComparator comparator;
-        return comparator( left_utf8string, rhs ) >= 0;
-    }
+    bool operator>=( const char* lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) >= 0; }
 
-    bool operator>=( const Utf8String& lhs, const char* rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) >= 0;
-    }
+    bool operator>=( const Utf8String& lhs, const char* rhs ){ return Utf8String::compare( lhs, rhs ) >= 0; }
 
-    bool operator>=( const std::string& lhs, const Utf8String& rhs ){
-        Utf8String left_utf8string( lhs );
-        return left_utf8string.compare(rhs) >= 0;
-    }
+    bool operator>=( const std::string& lhs, const Utf8String& rhs ){ return Utf8String::compare( lhs, rhs ) >= 0; }
 
-    bool operator>=( const Utf8String& lhs, const std::string& rhs ){
-        Utf8String right_utf8string( rhs );
-        Utf8StringComparator comparator;
-        return comparator( lhs, right_utf8string ) >= 0;
-    }
-
+    bool operator>=( const Utf8String& lhs, const std::string& rhs ){ return Utf8String::compare( lhs, rhs ) >= 0; }
 
 
 
