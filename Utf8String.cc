@@ -49,10 +49,13 @@ namespace jet{
             throw new Exception( "Utf8String size cannot be zero." );
         }
 
+        //make room for null character so we don't have to free memory after ->getCString() calls
+        size_in_bytes++;
+
         this->characters = new char[ size_in_bytes ];
         memcpy( this->characters, source_string, size_in_bytes );
 
-        this->number_of_characters = size_in_bytes;
+        this->number_of_characters = size_in_bytes - 1;
         this->size_of_character_data = size_in_bytes;
 
     }
@@ -67,10 +70,13 @@ namespace jet{
             throw new Exception( "Utf8String size cannot be zero." );
         }
 
+        //make room for null character so we don't have to free memory after ->getCString() calls
+        size_in_bytes++;
+
         this->characters = new char[ size_in_bytes ];
         memcpy( this->characters, source_string, size_in_bytes );
 
-        this->number_of_characters = size_in_bytes;
+        this->number_of_characters = size_in_bytes - 1;
         this->size_of_character_data = size_in_bytes;
 
     }
@@ -79,11 +85,12 @@ namespace jet{
 
     Utf8String::Utf8String( char source_character ): Utf8StringDefaultValues{
 
-        this->characters = new char[ 1 ];
+        this->characters = new char[ 2 ];
         this->characters[0] = source_character;
+        this->characters[1] = 0;  //null terminate
 
         this->number_of_characters = 1;
-        this->size_of_character_data = 1;
+        this->size_of_character_data = 2;
 
     }
 
@@ -264,11 +271,13 @@ namespace jet{
 
             Utf8String *temp = new Utf8String;
 
+            //remove one of the NULL characters
+            new_size_of_character_data--;
 
             temp->characters = new char[ new_size_of_character_data ];
 
             memcpy( temp->characters, this->characters, this->size_of_character_data );
-            memcpy( temp->characters + this->size_of_character_data, right.characters, right.size_of_character_data );
+            memcpy( temp->characters + this->size_of_character_data - 1, right.characters, right.size_of_character_data );
 
             temp->number_of_characters = new_number_of_characters;
             temp->size_of_character_data = new_size_of_character_data;
@@ -313,7 +322,7 @@ namespace jet{
 
     std::ostream& operator<<( std::ostream &output_stream, const Utf8String &output_string ){
 
-        output_stream.write( output_string.characters, output_string.size_of_character_data );
+        output_stream.write( output_string.characters, output_string.size_of_character_data - 1 );
         return output_stream;
 
     }
@@ -364,7 +373,7 @@ namespace jet{
     }
 
 
-    bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
+    int Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
 
         size_t left_length = left.getLength();
         size_t right_length = right.getLength();
@@ -380,29 +389,238 @@ namespace jet{
             right_character = right.getAsciiCharacterAtIndex( x );
 
             if( left_character < right_character ){
-                return true;
+                return -1;
             }
 
             if( left_character > right_character ){
-                return false;
+                return 1;
             }
 
         }
 
         if( left_length == right_length ){
             //strings are equal
-            return false;
+            return 0;
         }
 
         if( right_length > left_length ){
             //right has more characters
-            return true;
+            return 1;
         }
 
         //left has more characters
-        return false;
+        return -1;
 
     }
+
+
+    int Utf8String::compare( const Utf8String& other ){
+
+        Utf8StringComparator comparator;
+        return comparator( *this, other );
+
+    }
+
+
+    int Utf8String::compare( const char* other ){
+
+        Utf8StringComparator comparator;
+        return comparator( *this, Utf8String(other) );
+
+    }
+
+
+    int Utf8String::compare( const std::string& other ){
+
+        Utf8StringComparator comparator;
+        return comparator( *this, Utf8String(other) );
+
+    }
+
+
+
+    bool operator==( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) == 0;
+    }
+
+    bool operator==( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) == 0;
+    }
+
+    bool operator==( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) == 0;
+    }
+
+    bool operator==( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) == 0;
+    }
+
+    bool operator==( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) == 0;
+    }
+
+
+
+    bool operator!=( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) != 0;
+    }
+
+    bool operator!=( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) != 0;
+    }
+
+    bool operator!=( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) != 0;
+    }
+
+    bool operator!=( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) != 0;
+    }
+
+    bool operator!=( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) != 0;
+    }
+
+
+
+    bool operator<( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) < 0;
+    }
+
+    bool operator<( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) < 0;
+    }
+
+    bool operator<( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) < 0;
+    }
+
+    bool operator<( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) < 0;
+    }
+
+    bool operator<( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) < 0;
+    }
+
+
+
+    bool operator>( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) > 0;
+    }
+
+    bool operator>( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) > 0;
+    }
+
+    bool operator>( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) > 0;
+    }
+
+    bool operator>( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) > 0;
+    }
+
+    bool operator>( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) > 0;
+    }
+
+
+
+    bool operator<=( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) <= 0;
+    }
+
+    bool operator<=( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) <= 0;
+    }
+
+    bool operator<=( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) <= 0;
+    }
+
+    bool operator<=( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) <= 0;
+    }
+
+    bool operator<=( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) <= 0;
+    }
+
+
+
+    bool operator>=( const Utf8String& lhs, const Utf8String& rhs ){
+        Utf8StringComparator comparator;
+        return comparator( lhs, rhs ) >= 0;
+    }
+
+    bool operator>=( const char* lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        Utf8StringComparator comparator;
+        return comparator( left_utf8string, rhs ) >= 0;
+    }
+
+    bool operator>=( const Utf8String& lhs, const char* rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) >= 0;
+    }
+
+    bool operator>=( const std::string& lhs, const Utf8String& rhs ){
+        Utf8String left_utf8string( lhs );
+        return left_utf8string.compare(rhs) >= 0;
+    }
+
+    bool operator>=( const Utf8String& lhs, const std::string& rhs ){
+        Utf8String right_utf8string( rhs );
+        Utf8StringComparator comparator;
+        return comparator( lhs, right_utf8string ) >= 0;
+    }
+
+
+
+
+
 
 
 
