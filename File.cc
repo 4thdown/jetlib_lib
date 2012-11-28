@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sys/stat.h>
 
 namespace jet{
 
@@ -97,6 +98,28 @@ namespace jet{
         return this->filename;
 
     }
+
+    bool File::exists() const{
+
+        struct stat file_status;
+        if( stat( this->filename.getCString(), &file_status ) == 0 ){
+            return true;
+        }
+        return false;
+
+    }
+
+    bool File::exists( Utf8String filename ){
+
+        struct stat file_status;
+        if( stat( filename.getCString(), &file_status ) == 0 ){
+            return true;
+        }
+        return false;
+
+    }
+
+
 
 
 }

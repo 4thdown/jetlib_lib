@@ -142,6 +142,13 @@ namespace jet{
     }
 
 
+    void Directory::appendToPath( Utf8String path_suffix ){
+
+        this->full_path += path_suffix;
+
+    }
+
+
     Utf8String Directory::getName() const{
 
         using namespace std;
@@ -160,6 +167,57 @@ namespace jet{
         }
 
         return this->full_path;
+
+    }
+
+
+    bool Directory::create(){
+
+        int status;
+        status = mkdir( this->full_path.getCString(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+
+        if( status == 0 ){
+            return true;
+        }
+
+        int error = errno;
+
+        switch( error ){
+
+            case EACCES:
+                throw new Exception( "mkdir failed: The process did not have search permission on some component of pathname, or did not have write permission on the parent directory of the directory to be created." );
+
+            case EEXIST:
+                throw new Exception( "mkdir failed: Either the named file refers to a symbolic link, or there is already a file or directory with the given pathname." );
+
+            case ELOOP:
+                throw new Exception( "mkdir failed: A loop exists in symbolic links. This error is issued if more than POSIX_SYMLOOP (defined in the limits.h header file) symbolic links are detected in the resolution of pathname." );
+
+            case EMLINK:
+                throw new Exception( "mkdir failed: The link count of the parent directory has already reached LINK_MAX (defined in the limits.h header file)." );
+
+            case ENAMETOOLONG:
+                throw new Exception( "mkdir failed: pathname is longer than PATH_MAX characters or some component of pathname is longer than NAME_MAX characters while _POSIX_NO_TRUNC is in effect. For symbolic links, the length of the pathname string substituted for a symbolic link exceeds PATH_MAX. The PATH_MAX and NAME_MAX values can be determined using pathconf()." );
+
+            case ENOENT:
+                throw new Exception( "mkdir failed: Some component of pathname does not exist, or pathname is an empty string." );
+
+            case ENOSPC:
+                throw new Exception( "mkdir failed: The file system does not have enough space to contain a new directory, or the parent directory cannot be extended." );
+
+            case ENOTDIR:
+                throw new Exception( "mkdir failed: A component of the pathname prefix is not a directory." );
+
+            case EROFS:
+                throw new Exception( "mkdir failed: The parent directory of the directory to be created is on a read-only file system." );
+
+            default: {
+                throw new Exception( "mkdir failed: Unrecognised error from mkdir." );
+            }
+
+        };
+
+        return false;
 
     }
 
