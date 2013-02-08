@@ -45,18 +45,19 @@ namespace jet{
 
     Utf8String::Utf8String( const char *source_string, size_t size_in_bytes ): Utf8StringDefaultValues{
 
-        if( size_in_bytes == 0 ){
-            throw new Exception( "Utf8String size cannot be zero." );
-        }
-
         //make room for null character so we don't have to free memory after ->getCString() calls
         size_in_bytes++;
 
         this->characters = new char[ size_in_bytes ];
-        memcpy( this->characters, source_string, size_in_bytes );
-
         this->number_of_characters = size_in_bytes - 1;
         this->size_of_character_data = size_in_bytes;
+
+        if( size_in_bytes == 1 ){
+            *this->characters = 0;
+            //no characters, just add the NULL character, no copy to do (see Invariant 001)
+            return;
+        }
+        memcpy( this->characters, source_string, size_in_bytes );
 
     }
 
@@ -66,18 +67,20 @@ namespace jet{
 
         size_t size_in_bytes = strlen( source_string );
 
-        if( size_in_bytes == 0 ){
-            throw new Exception( "Utf8String size cannot be zero." );
-        }
-
         //make room for null character so we don't have to free memory after ->getCString() calls
         size_in_bytes++;
 
         this->characters = new char[ size_in_bytes ];
-        memcpy( this->characters, source_string, size_in_bytes );
-
         this->number_of_characters = size_in_bytes - 1;
         this->size_of_character_data = size_in_bytes;
+
+        if( size_in_bytes == 1 ){
+            *this->characters = 0;
+            //no characters, just add the NULL character, no copy to do (see Invariant 001)
+            return;
+        }
+
+        memcpy( this->characters, source_string, size_in_bytes );
 
     }
 
@@ -322,7 +325,9 @@ namespace jet{
 
     std::ostream& operator<<( std::ostream &output_stream, const Utf8String &output_string ){
 
-        output_stream.write( output_string.characters, output_string.size_of_character_data - 1 );
+        if( output_string.getSize() > 0 ){
+            output_stream.write( output_string.characters, output_string.size_of_character_data - 1 );
+        }
         return output_stream;
 
     }

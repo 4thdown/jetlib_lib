@@ -30,6 +30,9 @@ namespace jet{
         :full_path(full_path)
     {
 
+        if( this->full_path.getSize() == 0 ){
+            this->full_path = Directory::getWorkingPath();
+        }
 
     }
 
@@ -38,6 +41,9 @@ namespace jet{
         :full_path( Utf8String(full_path) )
     {
 
+        if( this->full_path.getSize() == 0 ){
+            this->full_path = Directory::getWorkingPath();
+        }
 
     }
 
