@@ -305,6 +305,15 @@ namespace jet{
 
     }
 
+    Utf8String& Utf8String::operator+=( const char *right ){
+
+        Utf8String *right_string = new Utf8String( right );
+        *this += *right_string;
+        delete right_string;
+        return *this;
+
+    }
+
 
 
     Utf8String Utf8String::operator+( const Utf8String &right ){
@@ -320,6 +329,14 @@ namespace jet{
         return Utf8String(*this) += Utf8String(right);
 
     }
+
+
+    Utf8String Utf8String::operator+( const char *right ){
+
+        return Utf8String(*this) += Utf8String(right);
+
+    }
+
 
 
 
