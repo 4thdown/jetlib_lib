@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <utility>
 #include <iostream>
+#include <iomanip>
 
 
 namespace jet{
@@ -420,6 +421,31 @@ namespace jet{
     }
 
 
+    std::ostream& print_as_hex( std::ostream& output_stream, const Utf8String &output_string ){
+
+        size_t byte_index = 0;
+
+        char *byte_iterator = output_string.characters;
+        char current_byte;
+
+        while( byte_index < output_string.size_of_character_data ){
+
+            current_byte = *byte_iterator;
+
+            output_stream << std::setw(2) << std::setfill('0') << std::hex << (int) current_byte;
+
+            byte_index++;
+
+            byte_iterator++;
+
+        }
+
+        return output_stream;
+
+    }
+
+
+
     bool Utf8StringComparator::operator()( Utf8String const &left, Utf8String const &right ) const{
 
         size_t left_length = left.getLength();
@@ -747,6 +773,38 @@ namespace jet{
         return new_string;
 
     }
+
+
+    Utf8String Utf8String::escapeShellArgument() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character == 0x27 ){  //single quote
+
+                new_string += 0x5C;  //put a backslash in front of the single quote
+                new_string += 0x27;
+
+            }else{
+
+                new_string += current_character;
+
+            }
+
+            current_character_index++;
+
+        }
+
+        return '\'' + new_string + '\'';
+
+    }
+
 
 
 }
