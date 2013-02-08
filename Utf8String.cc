@@ -338,6 +338,31 @@ namespace jet{
     }
 
 
+    Utf8String operator+( const char *left, const Utf8String& right ){
+
+        return Utf8String(left) + right;
+
+    }
+
+    Utf8String operator+=( const char *left, const Utf8String& right ){
+
+        return Utf8String(left) + right;
+
+    }
+
+
+    Utf8String operator+( const char left, const Utf8String& right ){
+
+        return Utf8String(left) + right;
+
+    }
+
+    Utf8String operator+=( const char left, const Utf8String& right ){
+
+        return Utf8String(left) + right;
+
+    }
+
 
 
     std::ostream& operator<<( std::ostream &output_stream, const Utf8String &output_string ){
