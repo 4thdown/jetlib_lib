@@ -788,8 +788,11 @@ namespace jet{
 
             if( current_character == 0x27 ){  //single quote
 
-                new_string += 0x5C;  //put a backslash in front of the single quote
-                new_string += 0x27;
+                //this will replace all single quotes with '\''
+                new_string += 0x27;  //single quote
+                new_string += 0x5C;  //backslash
+                new_string += 0x27;  //single quote
+                new_string += 0x27;  //single quote
 
             }else{
 
