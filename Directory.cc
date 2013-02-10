@@ -26,7 +26,7 @@ namespace jet{
 
     }
 
-    Directory::Directory( Utf8String full_path )
+    Directory::Directory( const Utf8String &full_path )
         :full_path(full_path)
     {
 
@@ -275,6 +275,41 @@ namespace jet{
             }
 
         };
+
+    }
+
+
+
+    /**
+     * Determines if the filesystem entry at the provided location is a directory.
+     *
+     */
+    bool Directory::isDirectory( const Utf8String &full_path ){
+
+        return Directory::isDirectory( full_path.getCString() );
+
+    }
+
+
+
+    /**
+     * Determines if the filesystem entry at the provided location is a directory.
+     *
+     */
+    bool Directory::isDirectory( const char *full_path ){
+
+        struct stat filesystem_stats;
+
+        if( stat(full_path, &filesystem_stats) == 0 ){
+
+            if( filesystem_stats.st_mode & S_IFDIR ){
+                return true;
+            }
+            return false;
+
+        }
+
+        return false;
 
     }
 
