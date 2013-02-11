@@ -317,7 +317,7 @@ namespace jet{
 
 
 
-    Utf8String Utf8String::operator+( const Utf8String &right ){
+    Utf8String Utf8String::operator+( const Utf8String &right ) const{
 
         return Utf8String(*this) += right;
 
@@ -325,14 +325,14 @@ namespace jet{
 
 
 
-    Utf8String Utf8String::operator+( const char right ){
+    Utf8String Utf8String::operator+( const char right ) const{
 
         return Utf8String(*this) += Utf8String(right);
 
     }
 
 
-    Utf8String Utf8String::operator+( const char *right ){
+    Utf8String Utf8String::operator+( const char *right ) const{
 
         return Utf8String(*this) += Utf8String(right);
 
