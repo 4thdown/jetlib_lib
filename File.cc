@@ -11,9 +11,12 @@ namespace jet{
 
 
     File::File()
-        :state(1), filename(""), contents(""){
+        :state(1), filename("")
+    {
 
     }
+
+
 
     File::File( Utf8String filename )
         :state(1), filename(filename)
@@ -21,6 +24,7 @@ namespace jet{
 
 
     }
+
 
 
     File::File( const char *filename )
@@ -31,25 +35,24 @@ namespace jet{
     }
 
 
+
     void File::write( const char *output ){
 
-        this->contents = output;
-
+        Utf8String output_string( output );
         std::ofstream myfile;
         myfile.open( this->filename.getCString() );
-        myfile << this->contents;
+        myfile << output_string;
         myfile.close();
 
     }
 
 
-    void File::write( Utf8String &output ){
 
-        this->contents = output;
+    void File::write( Utf8String &output ){
 
         std::ofstream myfile;
         myfile.open( this->filename.getCString() );
-        myfile << this->contents;
+        myfile << output;
         myfile.close();
 
     }
@@ -60,7 +63,7 @@ namespace jet{
         using namespace std;
 
         ifstream::pos_type size;
-        Utf8String *new_contents;
+        Utf8String new_contents;
 
         char *memblock;
 
@@ -74,23 +77,20 @@ namespace jet{
             myfile.read( memblock, size );
             myfile.close();
 
-            new_contents = new Utf8String( memblock, size );
-
-            this->contents = *new_contents;
+            new_contents = std::move( Utf8String(memblock, size) );
 
             delete[] memblock;
-            delete new_contents;
 
         }else{
 
-            this->contents = Utf8String();
             throw new Exception( "Unable to open file." );
 
         }
 
-        return this->contents;
+        return new_contents;
 
     }
+
 
 
     Utf8String File::getFilename() const{
@@ -98,6 +98,8 @@ namespace jet{
         return this->filename;
 
     }
+
+
 
     bool File::exists() const{
 
@@ -108,6 +110,8 @@ namespace jet{
         return false;
 
     }
+
+
 
     bool File::exists( Utf8String filename ){
 
