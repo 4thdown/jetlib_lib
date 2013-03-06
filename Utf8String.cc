@@ -388,7 +388,7 @@ namespace jet{
         char *byte_iterator = output_string.characters;
         char current_byte;
 
-        while( byte_index < output_string.size_of_character_data ){
+        while( byte_index < output_string.getSize() ){
 
             current_byte = *byte_iterator;
 
