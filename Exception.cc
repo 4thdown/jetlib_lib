@@ -7,6 +7,11 @@
 namespace jet{
 
 
+    Exception::Exception(){
+
+    }
+
+
     Exception::Exception( const char *exception_message ){
 
         this->message = Utf8String( exception_message );
