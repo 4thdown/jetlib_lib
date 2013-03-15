@@ -830,4 +830,40 @@ namespace jet{
 
 
 
+    std::vector<Utf8String> Utf8String::split( char delimiter ) const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+
+        std::vector<Utf8String> list;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character == delimiter ){
+
+                list.push_back( std::move(new_string) );  //this will empty out this string (effectively doing new_string = "";)
+
+            }else{
+
+                new_string += current_character;
+
+            }
+
+            current_character_index++;
+
+        }
+
+        list.push_back( std::move(new_string) );
+
+        return list;
+
+    }
+
+
+
+
 }
