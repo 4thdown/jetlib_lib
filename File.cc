@@ -83,7 +83,7 @@ namespace jet{
 
         }else{
 
-            throw new Exception( "Unable to open file." );
+            throw new Exception( "Unable to open file.", __FILE__, __LINE__ );
 
         }
 

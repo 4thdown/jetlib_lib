@@ -134,17 +134,17 @@ namespace jet{
 #define LEXICAL_CAST_NUMBER \
     std::ostringstream convert; \
     convert << number; \
-    std::string result = convert.str(); \
-    Utf8String *temp_string = new Utf8String( result ); \
+    Utf8String *temp_string = new Utf8String( convert.str() ); \
     swap( *this, *temp_string ); \
     delete temp_string;
 
-    Utf8String::Utf8String( long number ){ LEXICAL_CAST_NUMBER }
-    Utf8String::Utf8String( unsigned long number ){ LEXICAL_CAST_NUMBER }
-    Utf8String::Utf8String( int number ){ LEXICAL_CAST_NUMBER }
-    Utf8String::Utf8String( unsigned int number ){ LEXICAL_CAST_NUMBER }
-    Utf8String::Utf8String( short number ){ LEXICAL_CAST_NUMBER }
-    Utf8String::Utf8String( unsigned short number ){ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( long number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( unsigned long number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( int number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( unsigned int number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( short number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+    Utf8String::Utf8String( unsigned short number ): Utf8StringDefaultValues{ LEXICAL_CAST_NUMBER }
+
 
 
 
