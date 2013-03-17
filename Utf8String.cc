@@ -59,7 +59,10 @@ namespace jet{
             //no characters, just add the NULL character, no copy to do (see Invariant 001)
             return;
         }
-        memcpy( this->characters, source_string, size_in_bytes );
+        memcpy( this->characters, source_string, size_in_bytes - 1 );
+
+        //add the null character to the last position (because the last byte hasn't been initialized)
+        *(this->characters + (size_in_bytes-1)) = 0;
 
     }
 
