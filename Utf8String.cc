@@ -45,12 +45,22 @@ namespace jet{
 
 
 
-    Utf8String::Utf8String( const char *source_string, size_t size_in_bytes ): Utf8StringDefaultValues{
+    Utf8String::Utf8String( const char *source_string, size_t size_in_bytes, bool copy ): Utf8StringDefaultValues{
+
+        //If copy is false, take ownership of this memory ( must be the first value returned from new[] )
+        //If copy is false, the last byte will be overwritten with the null character, so you may want to allocate one more than you're going to use
+        //In that case, size_in_bytes represents the size of the buffer, not the data.
+        //So, if you're going to use 10 bytes, size_in_bytes should be 11 and *source_string should point to the beginning of a char[11]
 
         //make room for null character so we don't have to free memory after ->getCString() calls
-        size_in_bytes++;
 
-        this->characters = new char[ size_in_bytes ];
+        if( copy ){
+            size_in_bytes++;
+            this->characters = new char[ size_in_bytes ];
+        }else{
+            this->characters = const_cast<char *>( source_string );
+        }
+
         this->number_of_characters = size_in_bytes - 1;
         this->size_of_character_data = size_in_bytes;
 
@@ -59,7 +69,10 @@ namespace jet{
             //no characters, just add the NULL character, no copy to do (see Invariant 001)
             return;
         }
-        memcpy( this->characters, source_string, size_in_bytes - 1 );
+
+        if( copy ){
+            memcpy( this->characters, source_string, size_in_bytes - 1 );
+        }
 
         //add the null character to the last position (because the last byte hasn't been initialized)
         *(this->characters + (size_in_bytes-1)) = 0;
@@ -194,37 +207,6 @@ namespace jet{
 
 
 
-    Utf8String::~Utf8String(){
-
-        if( this->size_of_character_data != 0 ){
-            delete[] this->characters;
-        }
-
-    }
-
-
-
-    char Utf8String::getAsciiCharacterAtIndex( size_t index ) const{
-
-        if( index >= this->number_of_characters ){
-
-            throw new Exception( "Index out of range." );
-
-        }
-
-        return this->characters[ index ];
-
-    }
-
-
-    const char* Utf8String::getCString() const{
-
-        return this->characters;
-
-    }
-
-
-
     void Utf8String::clear(){
 
         if( this->size_of_character_data == 0 ){
@@ -240,26 +222,6 @@ namespace jet{
     }
 
 
-
-    unsigned int Utf8String::getSize() const{
-
-        return this->number_of_characters;
-
-    }
-
-
-    unsigned int Utf8String::getLength() const{
-
-        return this->number_of_characters;
-
-    }
-
-
-    bool Utf8String::isEmpty() const{
-
-        return this->getSize() == 0;
-
-    }
 
 
 
