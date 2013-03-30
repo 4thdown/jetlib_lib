@@ -48,11 +48,11 @@ namespace jet{
 
 
 
-    void File::write( Utf8String &output ){
+    void File::write( Utf8String output ){
 
         std::ofstream myfile;
         myfile.open( this->filename.getCString() );
-        myfile << output;
+        myfile << std::move(output);
         myfile.close();
 
     }
