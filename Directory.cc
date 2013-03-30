@@ -147,6 +147,12 @@ namespace jet{
 
     }
 
+    void Directory::setFullPath( Utf8String new_path ){
+
+        this->full_path = std::move(new_path);
+
+    }
+
 
     void Directory::appendToPath( Utf8String path_suffix ){
 

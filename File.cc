@@ -100,6 +100,12 @@ namespace jet{
     }
 
 
+    void File::setFilename( Utf8String filename ){
+
+        this->filename = std::move(filename);
+
+    }
+
 
     bool File::exists() const{
 
