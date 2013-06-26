@@ -829,6 +829,27 @@ namespace jet{
     }
 
 
+    Utf8String Utf8String::join( std::vector<Utf8String> my_list ) const{
+
+        const Utf8String delimeter( *this );
+        Utf8String returned_string;
+        int x = 0;
+        for( Utf8String item : my_list ){
+
+            if( x != 0 ){
+                returned_string += delimeter;
+            }
+            returned_string += item;
+
+            ++x;
+
+        }
+
+        return returned_string;
+
+    }
+
+
 
 
 }
