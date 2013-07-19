@@ -699,6 +699,52 @@ namespace jet{
 
 
 
+    Utf8String Utf8String::toUnderscoreCase() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+        char last_character = 0;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character >= 0x41 && current_character <= 0x5A ){  //upper-case alpha
+
+                if( current_character_index != 0 && last_character != '_' ){
+                    new_string += '_';
+                }
+                new_string += ( current_character + 32 );  //convert to lower case and add it to the new string
+                last_character = ( current_character + 32 );
+
+            }else if( current_character == 0x20 || current_character == 0x2D ){   //space or hyphen
+
+                if( current_character_index != 0 && last_character != '_' ){
+                    new_string += '_';
+                    last_character = '_';
+                }
+
+            }else{
+
+                new_string += current_character;
+                last_character = current_character;
+
+            }
+
+            current_character_index++;
+
+        }
+
+        return new_string;
+
+    }
+
+
+
+
+
     Utf8String Utf8String::toLowerCase() const{
 
         size_t current_character_index = 0;
