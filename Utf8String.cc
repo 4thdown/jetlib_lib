@@ -699,7 +699,7 @@ namespace jet{
 
 
 
-    Utf8String Utf8String::toUnderscoreCase() const{
+    Utf8String Utf8String::toUnderscoreCase( bool clean ) const{
 
         size_t current_character_index = 0;
 
@@ -728,8 +728,26 @@ namespace jet{
 
             }else{
 
-                new_string += current_character;
-                last_character = current_character;
+
+                if( clean ){
+
+                    if( ( current_character >= 0x61 && current_character <= 0x7A ) || ( current_character >= 0x30 && current_character <= 0x39 ) ){  //is lower or numeric
+
+                        new_string += current_character;
+                        last_character = current_character;
+
+                    }
+
+                    //else ignore non-alpha numeric
+
+                }else{
+
+                    new_string += current_character;
+                    last_character = current_character;
+
+                }
+
+
 
             }
 
