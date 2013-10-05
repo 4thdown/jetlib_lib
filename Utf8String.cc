@@ -761,6 +761,21 @@ namespace jet{
 
 
 
+    char& Utf8String::operator[]( const int index ){
+
+        if( index < 0 ){
+            throw jet::Exception( "Index out of range." );
+        }
+
+        if( index >= this->getSize() ){
+            throw jet::Exception( "Index out of range." );
+        }
+
+        return this->characters[ index ];
+
+    }
+
+
 
 
     Utf8String Utf8String::toLowerCase() const{
