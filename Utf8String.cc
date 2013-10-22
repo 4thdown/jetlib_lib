@@ -408,7 +408,7 @@ namespace jet{
 
     std::ostream& print_as_hex( std::ostream& output_stream, const Utf8String &output_string ){
 
-        size_t byte_index = 0;
+        size_t byte_index = 1;
 
         char *byte_iterator = output_string.characters;
         char current_byte;
@@ -417,7 +417,7 @@ namespace jet{
 
             current_byte = *byte_iterator;
 
-            output_stream << std::setw(2) << std::setfill('0') << std::hex << (int) current_byte;
+            output_stream << std::setw(2) << std::setfill('0') << std::hex << (((unsigned int) current_byte) & 0xFF);
 
             byte_index++;
 
