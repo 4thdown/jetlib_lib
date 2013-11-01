@@ -713,15 +713,15 @@ namespace jet{
 
             if( current_character >= 0x41 && current_character <= 0x5A ){  //upper-case alpha
 
-                if( current_character_index != 0 && last_character != '_' ){
+                if( current_character_index != 0 && last_character != '_' && !( last_character >= 0x41 && last_character <= 0x5A ) ){  //last character is not underscore or upper alpha
                     new_string += '_';
                 }
                 new_string += ( current_character + 32 );  //convert to lower case and add it to the new string
-                last_character = ( current_character + 32 );
+                last_character = current_character;
 
-            }else if( current_character == 0x20 || current_character == 0x2D ){   //space or hyphen
+            }else if( current_character == 0x20 || current_character == 0x2D || current_character == '_' ){   //space or hyphen
 
-                if( current_character_index != 0 && last_character != '_' ){
+                if( current_character_index != 0 && last_character != '_' ){  //last character is not underscore or upper alpha
                     new_string += '_';
                     last_character = '_';
                 }
