@@ -873,6 +873,43 @@ namespace jet{
     }
 
 
+    Utf8String Utf8String::escapeBrowserText() const{
+
+        size_t current_character_index = 0;
+
+        Utf8String new_string;
+        char current_character;
+
+        while( current_character_index < this->number_of_characters ){
+
+            current_character = this->getAsciiCharacterAtIndex( current_character_index );
+
+            if( current_character == '<' ){
+                new_string += "&lt;";
+            }else if( current_character == '>' ){
+                new_string += "&gt;";
+            }else if( current_character == 0x27 ){  //Closing single quote (apostrophe)
+                new_string += "&#x27;";
+            }else if( current_character == '"' ){
+                new_string += "&quot;";
+            }else if( current_character == 0x60 ){  //Opening single quote
+                new_string += "&#x60;";
+            }else if( current_character == '&' ){
+                new_string += "&amp;";
+            }else{
+                new_string += current_character;
+            }
+
+            current_character_index++;
+
+        }
+
+        return new_string;
+
+    }
+
+
+
 
     std::vector<Utf8String> Utf8String::split( char delimiter ) const{
 
